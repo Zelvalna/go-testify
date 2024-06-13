@@ -58,13 +58,12 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, http.StatusOK, responseRecorder.Code)
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
 
-	expectedResponse := strings.Join(cafeList["moscow"], ",")
-	assert.Equal(t, expectedResponse, responseRecorder.Body.String())
-
-	cafeNames := strings.Split(responseRecorder.Body.String(), ",")
-	assert.Len(t, cafeNames, totalCount)
+	expectedResponse := cafeList["moscow"]
+	actualResponce := strings.Split(responseRecorder.Body.String(), (","))
+	assert.ElementsMatch(t, expectedResponse, actualResponce)
+	assert.Len(t, actualResponce, totalCount)
 
 	// здесь нужно добавить необходимые проверки
 }
@@ -77,7 +76,7 @@ func TestMainHandlerWhenRequestIsValid(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, http.StatusOK, responseRecorder.Code)
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.NotEmpty(t, responseRecorder.Body.String())
 
 }
@@ -89,7 +88,7 @@ func TestMainHandlerWhenCityIsUnsupported(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, http.StatusBadRequest, responseRecorder.Code)
+	require.Equal(t, http.StatusBadRequest, responseRecorder.Code)
 	assert.Equal(t, "wrong city value", responseRecorder.Body.String())
 
 }
